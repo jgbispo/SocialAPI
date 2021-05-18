@@ -6,7 +6,7 @@
   "author": "João Gustavo  Bispo <jgbispo20@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest --forceExit",
+    "test": "jest",
     "knex": "knex",
     "dev": "nodemon index.js",
     "start": "node index.js"
@@ -23,7 +23,6 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "knex": "^0.95.6",
-    "morgan": "^1.10.0",
     "pg": "^8.6.0"
   }
 }
