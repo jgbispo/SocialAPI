@@ -26,18 +26,19 @@ const userRegister = async (username, password, email) => {
 	return knex("users").select("*").where({ id: id[0] });
 };
 
-const userLogin = (username, password) => {
+const userLogin = async (username, password) => {
 
 	checkString(username, "Username não é uma string", "Username não informado");
 
 	checkString(password, "Passoword não é uma string", "Password não informada");
 
-	if (password != "123456") {
+	const user = await knex("users").select("*").where({ username: username });
+
+	if(!bcrypt.compare(password, user[0].password)){
 		throw new Error("Passowrd incorreta");
 	}
 
-	const user = { username, password };
-	return user;
+	return user[0];
 };
 
 
