@@ -1,4 +1,5 @@
 const authServices = require("../services/authServices");
+const userServices = require("../services/userServices");
 
 const Login = async (req, res) => {
 	try {
@@ -20,9 +21,9 @@ const Register = async (req, res) => {
 
 		const user = await authServices.userRegister(username, password, email);
 
-		user.password = "secret";
+		user[0].password = "secret";
 
-		res.status(201).json({ user,  message: "successfully" });
+		res.status(201).json({ user: user[0],  message: "successfully" });
 	} catch (error) {
 		res.status(500).json({ message: "Não foi possivel cadastrar o usuario", error: error.message, code: 1 });
 	}
@@ -40,8 +41,14 @@ const GetImages = (req, res) => {
 	res.status(200).json({ router: "Get Images" });
 };
 
-const Delete = (req, res) => {
-	res.status(200).json({ router: "Delete" });
+const Delete = async (req, res) => {
+	try {
+		const { id } = req.query;
+		await userServices.userDelete(id);
+		res.status(204).json({ message: "Usuario deletado com sucesso" });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
 };
 
 module.exports = {

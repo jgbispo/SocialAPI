@@ -1,40 +1,45 @@
+const bcrypt = require("bcrypt");
+const knex = require("../__database");
+const { checkString } = require("jgchecker");
 
-const userRegister = (username, password, email) => {
+const userRegister = async (username, password, email) => {
 
-	if (!username) {
-		throw new Error("Username não informado");
-	}
+	checkString(username, "Username não é uma string", "Username não informado");
 
-	if (!password) {
-		throw new Error("Password não informada");
-	}
+	checkString(password, "Passoword não é uma string", "Password não informada");
 
-	if (!email) {
-		throw new Error("Email não informado");
-	}
+	checkString(email, "Email não é uma string", "Email não informado");
 
-	const user = { username, password, email };
-	return user;
+	const user = {
+		username: username.toLowerCase(),
+		password,
+		email
+	};
+
+	const hash = await bcrypt.hash(user.password, 10);
+	user.password = hash;
+
+	const id = await knex("users").insert(user).catch(error => {
+		throw new Error(error.message);
+	});
+
+	return knex("users").select("*").where({ id: id[0] });
 };
 
 const userLogin = (username, password) => {
 
-	if (!username) {
-		throw new Error("Username não informado");
-	}
+	checkString(username, "Username não é uma string", "Username não informado");
 
-	if (!password) {
-		throw new Error("Password não informada");
-	}
+	checkString(password, "Passoword não é uma string", "Password não informada");
 
-
-	if(password != "123456"){
+	if (password != "123456") {
 		throw new Error("Passowrd incorreta");
 	}
 
 	const user = { username, password };
 	return user;
 };
+
 
 module.exports = {
 	userRegister,
